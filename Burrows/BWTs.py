@@ -1,20 +1,15 @@
-import numpy as np
-from functools import partial
-# Need for bigger BurrowsWheelerTransformRadix inputs
-#import sys
-#sys.setrecursionlimit(3000)
-
+EOS = "$"
 
 class BWTNaive:
     # Default naive version.
     # Create and sort all rotations of the text.
     # Referenced: https://en.wikipedia.org/wiki/Burrows–Wheeler_transform
-
     def getName(self):
         return "Naive BWT"
 
     def transform(self, text):
-        text += "\003"
+        assert EOS not in text, "Error: End of string character ('%s') in input." % EOS
+        text += EOS
         rotations = [text[i:] + text[:i] for i in range(len(text))]
         rotationsSorted = sorted(rotations)
         last_col = "".join([rotation[-1] for rotation in rotationsSorted])
@@ -29,14 +24,15 @@ class BWTSuffixes:
         return "Suffixes BWT"
 
     def transform(self, text):
-        text += "\003"
+        assert EOS not in text, "Error: End of string character ('%s') in input." % EOS
+        text += EOS
         rotations = sorted(text[i:] for i in range(len(text)))
         suffixesCount = len(rotations)
         transformed = [""] * suffixesCount
         for i in range(suffixesCount):
             suffixLength = len(rotations[i])
             if suffixLength == suffixesCount:
-                transformed[i] = "\003"
+                transformed[i] = EOS
             else:
                 transformed[i] = text[-suffixLength-1]
         return "".join(transformed)
@@ -50,7 +46,8 @@ class BWTSuffixes2:
         return "Suffixes BWT 2"
 
     def transform(self, text):
-        text += "\003"
+        assert EOS not in text, "Error: End of string character ('%s') in input." % EOS
+        text += EOS
         suff_arr = []
         for i in range(0, len(text)):
             suff_arr.append((text[i:], i))
@@ -59,7 +56,7 @@ class BWTSuffixes2:
         for suff in arrSorted:
             i = suff[1]  # The suffix's index is the 2nd element in the tuple
             if i == 0:
-                bwt.append("\003")
+                bwt.append(EOS)
             else:
                 bwt.append(text[i - 1])
 
@@ -74,7 +71,8 @@ class BWTSuffixesIndexes:
         return "Suffixes Indexes BWT"
 
     def transform(self, text):
-        text += "\003"
+        assert EOS not in text, "Error: End of string character ('%s') in input." % EOS
+        text += EOS
         ids = [i for i in range(len(text))]
         ids.sort(key=lambda i: text[i:])
         res = ""
@@ -82,7 +80,7 @@ class BWTSuffixesIndexes:
             if text[:i]:
                 res += text[:i][-1]
             else:
-                res += "\003"
+                res += EOS
         return res
 
 
@@ -93,7 +91,7 @@ def invertTransform(BFT_text):
     table = [""] * len(BFT_text)
     for i in range(len(BFT_text)):
         table = sorted(BFT_text[i] + table[i] for i in range(len(BFT_text)))
-    s = [row for row in table if row.endswith("\003")][0]
+    s = [row for row in table if row.endswith(EOS)][0]
     return s[:-1]
 
 
@@ -117,7 +115,7 @@ def invertTransformFaster(BFT_text):
     lastCol.extend(BFT_text)
     firstColIndexes = _getIndexes(firstCol)
     lastColIndexes = _getIndexes(lastCol)
-    idx = lastCol.index("\003")
+    idx = lastCol.index(EOS)
     for i in range(len(BFT_text) - 1):
         char = firstCol[idx]
         inverted += char

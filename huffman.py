@@ -68,6 +68,6 @@ def decode(encoded):
     return res
 
 
-e = encode("mina elan siin, aga sina????")
-print(e)
-print(decode(e))
+#e = encode("mina elan siin, aga sina????")
+#print(e)
+#print(decode(e))
