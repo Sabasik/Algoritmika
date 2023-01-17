@@ -1,11 +1,12 @@
 import re
+from math import log2, floor
 
 def LZ77_encode(text, window_size):
     input_char_array = list(text)
     output = ""
     window = []
     while len(input_char_array) > 0:
-        match = find_maximum_matching(input_char_array, window)
+        match = find_maximum_matching(input_char_array, window, window_size)
         output += str(match).replace(" ","").replace("'","")
         for i in range(max(0, len(window) - window_size + match[1] + 1)):
             window.pop(0)
@@ -14,17 +15,18 @@ def LZ77_encode(text, window_size):
     output += ';' + str(window_size)
     return output
     
-def find_maximum_matching(input_char_array, window):
+def find_maximum_matching(input_char_array, window, window_size):
     char_array_len = len(input_char_array)
     window_len = len(window)
     if char_array_len == 0:
-        return (0,0,"")
+        return (0,0," ")
     next_symb = input_char_array[0]
     max_length = 0 
     max_start = 0
     start = 0
     length = 0
-    while start < window_len and length < char_array_len and start + length < char_array_len + window_len:
+    n = 2**(15 - floor(log2(window_size)))-1
+    while start < window_len and length < char_array_len and start + length < char_array_len + window_len and length < n:
         if start + length >= window_len:
             character_to_compare = input_char_array[start + length - window_len]
         else:
@@ -38,7 +40,7 @@ def find_maximum_matching(input_char_array, window):
                 if length < char_array_len:
                     next_symb = input_char_array[length]
                 else:
-                    next_symb = ""
+                    next_symb = " "
             length = 0
             start += 1
     if max_length<length:
@@ -47,7 +49,7 @@ def find_maximum_matching(input_char_array, window):
         if length < char_array_len:
             next_symb = input_char_array[length]
         else:
-            next_symb = ""
+            next_symb = " "
     return (max_start, max_length, next_symb)
 
 def LZ77_decode(text):
@@ -87,33 +89,70 @@ def process_decoded_text(text):
     return list_of_triples, int(window_size)
 
 def LZ77_encode_file(file_name, window_size):
-    file = open(file_name, 'r',encoding="utf-8")
+    file = open("text_files\\"+file_name, 'r',encoding="utf-8")
     text = file.read()
     file.close()
-    file = open("compressed_" + file_name, 'w+')
+    file = open("compressed\\" + file_name, 'w+')
     file.write(LZ77_encode(text, window_size))
     file.close()
 
 def LZ77_decode_file(file_name):
-    file = open(file_name, 'r',encoding="utf-8")
+    file = open("compressed\\" + file_name, 'r',encoding="utf-8")
     text = file.read()
     file.close()
-    file = open("decompressed_" + file_name, 'w+')
+    file = open("decompressed\\" + file_name, 'w+')
     file.write(LZ77_decode(text))
     file.close()
 
-print(find_maximum_matching("bab","abbaa"))
-print(find_maximum_matching("baa","abbaa"))
-print(find_maximum_matching("dbaa","abbaa"))
-print(find_maximum_matching("babbbabbababbaa","abbaa"))
-print(find_maximum_matching("bab","abbaabababababaabaaabaabaaaaba"))
-print(find_maximum_matching("bbaa","abbaa"))
-print(find_maximum_matching("bbaab","abbaa"))
-print(find_maximum_matching("bbaabbababa","abbaa"))
-print(str(find_maximum_matching("abbaa","bbaa")))
+def LZ77_encode_binary(text, window_size):
+    input_char_array = list(text)
+    output = [window_size]
+    window = []
+    while len(input_char_array) > 0:
+        match = find_maximum_matching(input_char_array, window, window_size)
+        output.append(match)
+        for i in range(max(0, len(window) - window_size + match[1] + 1)):
+            window.pop(0)
+        for i in range(min(match[1] + 1, len(input_char_array))):
+            window.append(input_char_array.pop(0))
+    return output
+
+def LZ77_encode_file_binary(file_name, window_size):
+    byte_const = 2**8
+    file = open("text_files\\"+file_name, 'r', encoding="utf-8")
+    text = file.read()
+    file.close()
+    file = open("compressed\\" + file_name, 'w+', encoding="utf-8")
+    list_of_triples = LZ77_encode_binary(text, window_size)
+    print(len(list_of_triples))
+    window_size = list_of_triples.pop(0)
+    n = floor(log2(window_size)) + 1
+    window_size_letter_1 = chr(window_size // byte_const + 2**6)
+    window_size_letter_2 = chr(window_size % byte_const)
+    file.write(window_size_letter_1 + window_size_letter_2)
+    for triple in list_of_triples:
+        start = triple[0]
+        length = triple[1]
+        start_plus_length = start * 2**(16-n) + length
+        first_letter = chr(start_plus_length // byte_const)
+        second_letter = chr(start_plus_length % byte_const)
+        file.write(first_letter + second_letter + triple[2])
+    file.close()
 
 print(LZ77_decode(LZ77_encode('cabracadabrarrarra', 7)))
 print(LZ77_encode('See on katse lause! ÖÄÜÕ', 7))
+print(LZ77_encode_binary('See on katse lause! ÖÄÜÕ', 7))
 print(LZ77_decode(LZ77_encode('See on katse lause! ÖÄÜÕ', 7)))
-LZ77_encode_file("Lorem_ipsum.txt",100)
-LZ77_decode_file("compressed_Lorem_ipsum.txt")
+#LZ77_encode_file("Lorem_ipsum.txt",1000)
+#LZ77_decode_file("Lorem_ipsum.txt")
+file2 = open("text_files\\Lorem_ipsum.txt")
+a = 'Ö'
+print(a,'{0:08b}'.format(ord(a)))
+print(chr(64))
+window_size = 2002
+window_size_letter_1 = chr(window_size // 2**8 + 2**6)
+window_size_letter_2 = chr(window_size % 2**8)
+print(window_size_letter_1 + window_size_letter_2)
+print(ord(window_size_letter_1),ord(window_size_letter_2),(ord(window_size_letter_1)-64)*2**8+ord(window_size_letter_2))
+file2.close()
+LZ77_encode_file_binary("Lorem_ipsum.txt",4095)
