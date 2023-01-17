@@ -122,13 +122,12 @@ def LZ77_encode_file_binary(file_name, window_size):
     file = open("text_files\\"+file_name, 'r', encoding="utf-8")
     text = file.read()
     file.close()
-    file = open("compressed\\" + file_name, 'w+', encoding="utf-8")
     list_of_triples = LZ77_encode_binary(text, window_size)
-    print(len(list_of_triples))
     window_size = list_of_triples.pop(0)
     n = floor(log2(window_size)) + 1
     window_size_letter_1 = chr(window_size // byte_const + 2**6)
     window_size_letter_2 = chr(window_size % byte_const)
+    file = open("compressed\\"+ str(window_size)+'_' + file_name, 'w', encoding="utf-8", newline = '')
     file.write(window_size_letter_1 + window_size_letter_2)
     for triple in list_of_triples:
         start = triple[0]
@@ -139,11 +138,60 @@ def LZ77_encode_file_binary(file_name, window_size):
         file.write(first_letter + second_letter + triple[2])
     file.close()
 
+def LZ77_decode_binary(file):
+    list_of_triples, window_size = process_file_binary(file)
+    decoded_text = ""
+    decoded_list = []
+    for count, triple in enumerate(list_of_triples):
+        for i in range(triple[1]):
+            decoded_list.append(decoded_list[int(triple[0]) + i])
+            #if len(decoded_list)>2 and decoded_list[-2] == 'h' and decoded_list[-1] == 'e':
+            #    print(decoded_list,len(decoded_list), list_of_triples[count:count+20], decoded_text,triple) 
+            #    return decoded_text
+        decoded_list.append(triple[2])
+        #if len(decoded_list)>2 and decoded_list[-2] == 'h' and decoded_list[-1] == 'e':
+        #    print(decoded_list,len(decoded_list), list_of_triples[count:count+20], decoded_text,triple,count) 
+        #    return decoded_text
+        for i in range(max(0, len(decoded_list) - window_size)):
+            decoded_text += decoded_list.pop(0)
+    while len(decoded_list)>0:
+        decoded_text += decoded_list.pop(0)
+    return decoded_text
+
+def process_file_binary(file):
+    list_of_triples = []
+    window_size_letter_1 = file.read(1)
+    window_size_letter_2 = file.read(1)
+    window_size = (ord(window_size_letter_1)-64)*2**8+ord(window_size_letter_2)
+    n = floor(log2(window_size)) + 1
+    first_letter = file.read(1)
+    second_letter = file.read(1)
+    third_letter = file.read(1)
+    while (first_letter != ""):
+        start_plus_length = ord(first_letter)*2**8 + ord(second_letter)
+        start = start_plus_length // (2**(16-n))
+        length = start_plus_length % (2**(16-n))
+        list_of_triples.append((start, length, third_letter))
+        first_letter = file.read(1)
+        second_letter = file.read(1)
+        third_letter = file.read(1)
+
+    return list_of_triples, int(window_size)
+
+
+def LZ77_decode_file_binary(file_name):
+    file = open("compressed\\" + file_name, 'r',encoding="utf-8", newline = '')
+    text = LZ77_decode_binary(file)
+    file.close()
+    file = open("decompressed\\" + file_name, 'w', encoding="utf-8")
+    file.write(text)
+    file.close()
+
 print(LZ77_decode(LZ77_encode('cabracadabrarrarra', 7)))
 print(LZ77_encode('See on katse lause! ÖÄÜÕ', 7))
 print(LZ77_encode_binary('See on katse lause! ÖÄÜÕ', 7))
 print(LZ77_decode(LZ77_encode('See on katse lause! ÖÄÜÕ', 7)))
-#LZ77_encode_file("Lorem_ipsum.txt",1000)
+#LZ77_encode_file("Lorem_ipsum.txt",2047)
 #LZ77_decode_file("Lorem_ipsum.txt")
 file2 = open("text_files\\Lorem_ipsum.txt")
 a = 'Ö'
@@ -155,4 +203,7 @@ window_size_letter_2 = chr(window_size % 2**8)
 print(window_size_letter_1 + window_size_letter_2)
 print(ord(window_size_letter_1),ord(window_size_letter_2),(ord(window_size_letter_1)-64)*2**8+ord(window_size_letter_2))
 file2.close()
-LZ77_encode_file_binary("Lorem_ipsum.txt",4095)
+#LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
+#LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
+LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
+LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
