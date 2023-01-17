@@ -53,17 +53,21 @@ def find_maximum_matching(input_char_array, window):
 def LZ77_decode(text):
     list_of_triples, window_size = process_decoded_text(text)
     decoded_text = ""
-    window_start = 0
+    decoded_list = []
     for triple in list_of_triples:
         for i in range(int(triple[1])):
             try:
-                decoded_text += decoded_text[window_start + int(triple[0]) + i]
+                decoded_list.append(decoded_list[int(triple[0]) + i])
             except:
-                raise Exception(str(window_start) +(triple[0]) + str(i))
-        decoded_text += triple[2]
+                raise Exception((triple[0]) + str(i))
         if triple[2] == "":
-            decoded_text += " "
-        window_start = max(0, len(decoded_text) - window_size)
+            decoded_list.append(" ")
+        else:
+            decoded_list.append(triple[2])
+        for i in range(max(0, len(decoded_list) - window_size)):
+            decoded_text += decoded_list.pop(0)
+    while len(decoded_list)>0:
+        decoded_text += decoded_list.pop(0)
     return decoded_text
 
 def process_decoded_text(text):
@@ -73,10 +77,10 @@ def process_decoded_text(text):
         if text[-1-i] == ';':
             break
         window_size = text[-1-i] + window_size
-    triple_regex = re.compile(r'\(\d+,\d+,.?\)')
+    triple_regex = re.compile(r'\(.*?\)')
     matches = triple_regex.findall(text)
     for match in matches:
-        triple_list = match[1:-1].replace("'","").split(",")
+        triple_list = match[1:-1].split(",")
         if len(triple_list) > 3:
             triple_list = [triple_list[0],triple_list[1],","]
         list_of_triples.append(tuple(triple_list))
@@ -109,6 +113,7 @@ print(find_maximum_matching("bbaabbababa","abbaa"))
 print(str(find_maximum_matching("abbaa","bbaa")))
 
 print(LZ77_decode(LZ77_encode('cabracadabrarrarra', 7)))
+print(LZ77_encode('See on katse lause! ÖÄÜÕ', 7))
 print(LZ77_decode(LZ77_encode('See on katse lause! ÖÄÜÕ', 7)))
-LZ77_encode_file("Lorem_ipsum.txt",1000)
+LZ77_encode_file("Lorem_ipsum.txt",100)
 LZ77_decode_file("compressed_Lorem_ipsum.txt")
