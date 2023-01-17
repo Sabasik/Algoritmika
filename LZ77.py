@@ -145,13 +145,7 @@ def LZ77_decode_binary(file):
     for count, triple in enumerate(list_of_triples):
         for i in range(triple[1]):
             decoded_list.append(decoded_list[int(triple[0]) + i])
-            #if len(decoded_list)>2 and decoded_list[-2] == 'h' and decoded_list[-1] == 'e':
-            #    print(decoded_list,len(decoded_list), list_of_triples[count:count+20], decoded_text,triple) 
-            #    return decoded_text
         decoded_list.append(triple[2])
-        #if len(decoded_list)>2 and decoded_list[-2] == 'h' and decoded_list[-1] == 'e':
-        #    print(decoded_list,len(decoded_list), list_of_triples[count:count+20], decoded_text,triple,count) 
-        #    return decoded_text
         for i in range(max(0, len(decoded_list) - window_size)):
             decoded_text += decoded_list.pop(0)
     while len(decoded_list)>0:
@@ -205,5 +199,7 @@ print(ord(window_size_letter_1),ord(window_size_letter_2),(ord(window_size_lette
 file2.close()
 #LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
 #LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
-LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
-LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
+LZ77_encode_file_binary("Tõde_ja_õigus_I.txt",2047)
+print("Kodeeritud")
+LZ77_decode_file_binary("2047_Tõde_ja_õigus_I.txt")
+print("Korras")
