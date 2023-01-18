@@ -8,13 +8,19 @@ import matplotlib.pyplot as plt
 
 
 
-#runBWTonFile(BWTSuffixesIndexes, "Tõde_ja_õigus_I.txt", 80000)
-#reverseBWTonFile("BWT_80000_Tõde_ja_õigus_I.txt", 80000)
-
-
+text, transformed = runBWTonFile(BWTSuffixesIndexes, "Tõde_ja_õigus_I.txt", 80000)
+print("BWT done")
 LZ77_encode_file_binary("BWT_80000_Tõde_ja_õigus_I.txt",2047)
-print("Kodeeritud")
+print("Encoding done")
 LZ77_decode_file_binary("2047_BWT_80000_Tõde_ja_õigus_I.txt")
-print("Korras")
+print("Decoding done")
+inverted = reverseBWTonFile("2047_BWT_80000_Tõde_ja_õigus_I.txt", 80000)
+print("BWT revert done")
+print(text == inverted)
 
+#print()
+#BWT = BWTSuffixesIndexes
+#text, transformed = runBWTonFile(BWT,"katkend.txt", 90000)
+#inverted = reverseBWTonFile("BWT_90000_katkend.txt", 90000)
 
+#print(text == inverted)

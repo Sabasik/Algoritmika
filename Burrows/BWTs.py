@@ -158,15 +158,19 @@ def runBWTonFile(BWTclass, filename, window_size):
     text = file.read()
     file.close()
     transformed = BWTclass().transformWindow(text, window_size)
-    file = open("text_files\\" + 'BWT_' + str(window_size) + "_" + filename, 'w', encoding="utf-8", newline='')
+    print(len(text), len(transformed))
+    file = open("text_files\\" + 'BWT_' + str(window_size) + "_" + filename, 'w', encoding="utf-8")
     file.write(transformed)
     file.close()
+    return text, transformed
 
 def reverseBWTonFile(filename, window_size):
-    file = open("decompressed\\" + filename, 'r', encoding="utf-8", newline='')
+    file = open("decompressed\\" + filename, 'r', encoding="utf-8")
     text = file.read()
     file.close()
     inverted = invertTransformFasterWindow(text, window_size)
+    print(len(text), len(inverted))
     file = open("text_files\\" + "BWT_inverse" + filename, 'w', encoding="utf-8")
     file.write(inverted)
     file.close()
+    return inverted

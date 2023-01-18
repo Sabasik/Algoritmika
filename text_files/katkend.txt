@@ -1,8 +1,4 @@
-from BWTs import BWTSuffixes, invertTransformFaster, BWTSuffixes2, BWTSuffixesIndexes, invertTransformFasterWindow, runBWTonFile, reverseBWTonFile
-
-BWT = BWTSuffixesIndexes()
-text = "AATCGCTAGGATCCTAATCGCTAGTCCG"
-text = """Tõde ja õigus I
+Tõde ja õigus I
 
 
 					A. H. Tammsaare
@@ -43,13 +39,4 @@ Lausal väljamäel oli tee pisut siledam, sellepärast kargas mees naise kõrval
 
 Natuke maad pahemat kätt teest kõrval asuva talu õuel seisis üksik naine ja vaatas möödasõitjaid, ämber käe otsas. Vargamäe Eespere noorele perenaisele näis seisja nii tuttavana, nagu oleks ta teda juba ammugi ja sagedasti näinud. Veel enam: nagu oleks ta ise kustuva päikese helgil nõnda kuskil taluõuel seisnud ja möödaminejaid vaadelnud ja nagu teeks ta seda ka tulevikus veel lugematuid kordi.
 
-„Mis selle talu nimi on?" küsis naine."""
-print(f'Input: {text}')
-transformed = BWT.transformWindow(text, 100)
-print(f'Transformed: {transformed}')
-inverted = invertTransformFasterWindow(transformed, 100)
-print(f'Inverted: {inverted}')
-print(text == inverted)
-print(len(text), len(transformed))
-print()
-
+„Mis selle talu nimi on?" küsis naine.
