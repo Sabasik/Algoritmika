@@ -19,7 +19,7 @@ def find_maximum_matching(input_char_array, window, window_size):
     char_array_len = len(input_char_array)
     window_len = len(window)
     if char_array_len == 0:
-        return (0,0," ")
+        return (0,0,"")
     next_symb = input_char_array[0]
     max_length = 0 
     max_start = 0
@@ -40,7 +40,7 @@ def find_maximum_matching(input_char_array, window, window_size):
                 if length < char_array_len:
                     next_symb = input_char_array[length]
                 else:
-                    next_symb = " "
+                    next_symb = ""
             length = 0
             start += 1
     if max_length<length:
@@ -49,7 +49,7 @@ def find_maximum_matching(input_char_array, window, window_size):
         if length < char_array_len:
             next_symb = input_char_array[length]
         else:
-            next_symb = " "
+            next_symb = ""
     return (max_start, max_length, next_symb)
 
 def LZ77_decode(text):
@@ -197,9 +197,9 @@ window_size_letter_2 = chr(window_size % 2**8)
 print(window_size_letter_1 + window_size_letter_2)
 print(ord(window_size_letter_1),ord(window_size_letter_2),(ord(window_size_letter_1)-64)*2**8+ord(window_size_letter_2))
 file2.close()
-#LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
-#LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
-LZ77_encode_file_binary("Tõde_ja_õigus_I.txt",2047)
-print("Kodeeritud")
-LZ77_decode_file_binary("2047_Tõde_ja_õigus_I.txt")
-print("Korras")
+LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
+LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
+#LZ77_encode_file_binary("Tõde_ja_õigus_I.txt",2047)
+#print("Kodeeritud")
+#LZ77_decode_file_binary("2047_Tõde_ja_õigus_I.txt")
+#print("Korras")
