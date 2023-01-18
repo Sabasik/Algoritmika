@@ -77,11 +77,22 @@ class BWTSuffixesIndexes:
         ids.sort(key=lambda i: text[i:])
         res = ""
         for i in ids:
-            if text[:i]:  # mby change to try and except
-                res += text[:i][-1]
-            else:
+            add = text[:i]
+            try:
+                res += add[-1]
+            except IndexError:
                 res += EOS
         return res
+
+    def transformWindow(self, text, window_size):
+        assert EOS not in text, "Error: End of string character ('%s') in input." % EOS
+        BWTtext = ""
+        sections = len(text) // window_size
+        for j in range(sections):
+            textSection = text[j*window_size:(j+1)*window_size]
+            res = self.transform(textSection)
+            BWTtext += res
+        return BWTtext
 
 
 def invertTransform(BFT_text):
@@ -129,4 +140,31 @@ def invertTransformFaster(BFT_text):
         idx = lastColIndexes[char][newIdx]
     return inverted
 
+def invertTransformFasterWindow(BFT_text, window_size):
+    window_size += 1
+    invertedText = ""
+    sections = len(BFT_text) // window_size
+    for j in range(sections):
+        textSection = BFT_text[j * window_size:(j + 1) * window_size]
+        inverted = invertTransformFaster(textSection)
+        invertedText += inverted
+    return invertedText
 
+
+def runBWTonFile(BWTclass, filename, window_size):
+    file = open("text_files\\" + filename, 'r', encoding="utf-8")
+    text = file.read()
+    file.close()
+    transformed = BWTclass().transformWindow(text, window_size)
+    file = open("compressed\\" + 'BWT_' + str(window_size) + "_" + filename, 'w', encoding="utf-8", newline='')
+    file.write(transformed)
+    file.close()
+
+def reverseBWTonFile(filename, window_size):
+    file = open("compressed\\" + filename, 'r', encoding="utf-8", newline='')
+    text = file.read()
+    file.close()
+    inverted = invertTransformFasterWindow(text, window_size)
+    file = open("decompressed\\" + "BWT_inverse" + filename, 'w', encoding="utf-8")
+    file.write(inverted)
+    file.close()
