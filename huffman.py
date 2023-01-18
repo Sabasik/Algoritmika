@@ -68,6 +68,7 @@ def decode(encoded):
     return res
 
 
-#e = encode("mina elan siin, aga sina????")
-#print(e)
-#print(decode(e))
+if __name__ == "__main__":
+    e = encode("mina elan siin, aga sina????")
+    print(e)
+    print(decode(e))

@@ -1,7 +1,7 @@
 import re
 from math import log2, floor
 
-def LZ77_encode(text, window_size):
+def LZ77_encode(text, window_size=7):
     input_char_array = list(text)
     output = ""
     window = []
@@ -181,25 +181,27 @@ def LZ77_decode_file_binary(file_name):
     file.write(text)
     file.close()
 
-print(LZ77_decode(LZ77_encode('cabracadabrarrarra', 7)))
-print(LZ77_encode('See on katse lause! ÖÄÜÕ', 7))
-print(LZ77_encode_binary('See on katse lause! ÖÄÜÕ', 7))
-print(LZ77_decode(LZ77_encode('See on katse lause! ÖÄÜÕ', 7)))
-#LZ77_encode_file("Lorem_ipsum.txt",2047)
-#LZ77_decode_file("Lorem_ipsum.txt")
-file2 = open("text_files\\Lorem_ipsum.txt")
-a = 'Ö'
-print(a,'{0:08b}'.format(ord(a)))
-print(chr(64))
-window_size = 2002
-window_size_letter_1 = chr(window_size // 2**8 + 2**6)
-window_size_letter_2 = chr(window_size % 2**8)
-print(window_size_letter_1 + window_size_letter_2)
-print(ord(window_size_letter_1),ord(window_size_letter_2),(ord(window_size_letter_1)-64)*2**8+ord(window_size_letter_2))
-file2.close()
-#LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
-#LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
-LZ77_encode_file_binary("Tõde_ja_õigus_I.txt",2047)
-print("Kodeeritud")
-LZ77_decode_file_binary("2047_Tõde_ja_õigus_I.txt")
-print("Korras")
+
+if __name__ == "__main__":
+    print(LZ77_decode(LZ77_encode('cabracadabrarrarra', 7)))
+    print(LZ77_encode('See on katse lause! ÖÄÜÕ', 7))
+    print(LZ77_encode_binary('See on katse lause! ÖÄÜÕ', 7))
+    print(LZ77_decode(LZ77_encode('See on katse lause! ÖÄÜÕ', 7)))
+    #LZ77_encode_file("Lorem_ipsum.txt",2047)
+    #LZ77_decode_file("Lorem_ipsum.txt")
+    file2 = open("text_files\\Lorem_ipsum.txt")
+    a = 'Ö'
+    print(a,'{0:08b}'.format(ord(a)))
+    print(chr(64))
+    window_size = 2002
+    window_size_letter_1 = chr(window_size // 2**8 + 2**6)
+    window_size_letter_2 = chr(window_size % 2**8)
+    print(window_size_letter_1 + window_size_letter_2)
+    print(ord(window_size_letter_1),ord(window_size_letter_2),(ord(window_size_letter_1)-64)*2**8+ord(window_size_letter_2))
+    file2.close()
+    #LZ77_encode_file_binary("Lorem_ipsum.txt",2047)
+    #LZ77_decode_file_binary("2047_Lorem_ipsum.txt")
+    LZ77_encode_file_binary("Tõde_ja_õigus_I.txt",2047)
+    print("Kodeeritud")
+    LZ77_decode_file_binary("2047_Tõde_ja_õigus_I.txt")
+    print("Korras")
