@@ -1,4 +1,3 @@
-import base64
 from heapq import *
 
 
@@ -47,18 +46,18 @@ def huff_encode(text):
     bitstring = "0" * ((8 - len(bitstring) % 8) % 8) + bitstring
     enc = int(bitstring, 2).to_bytes(len(bitstring) // 8, byteorder='big')
 
-    return str(codes)[1:-1] + "**" + base64.b64encode(enc).decode('utf8')
+    return str(codes)[1:-1].encode() + b"**" + enc
 
 
 def huff_decode(encoded):
-    pieces = encoded.split("**")
+    pieces = encoded.split(b"**")
     codes = {}
-    coded = pieces[0].split(", ")
+    coded = pieces[0].decode().split(", ")
     for c in coded:
         c = c.split(": ")
-        codes[c[1][1:-1]] = c[0][1:-1]
+        codes[c[1][1:-1]] = c[0][1:-1].replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r")
 
-    enc = base64.b64decode(pieces[1].encode('utf8'))
+    enc = pieces[1]
 
     text = "{0:b}".format(int.from_bytes(enc, byteorder='big'))
     res = ""
@@ -74,7 +73,24 @@ def huff_decode(encoded):
     return res
 
 
+def huff_encode_file(in_file, out_file):
+    with open(in_file, 'r', encoding="utf8") as fi:
+        text = fi.read()
+    with open(out_file, 'wb') as fo:
+        fo.write(huff_encode(text))
+
+
+def huff_decode_file(in_file, out_file):
+    with open(in_file, 'rb') as fi:
+        text = fi.read()
+    with open(out_file, 'w', encoding="utf8") as fo:
+        fo.write(huff_decode(text))
+
+
 if __name__ == "__main__":
     e = huff_encode("mina elan siin, aga sina????")
     print(e)
     print(huff_decode(e))
+
+    huff_encode_file("text_files/Tõde_ja_õigus_I.txt", "compressed/huff_Tõde_ja_õigus_I")
+    huff_decode_file("compressed/huff_Tõde_ja_õigus_I", "decompressed/huff_Tõde_ja_õigus_I.txt")
