@@ -77,7 +77,7 @@ class BWTSuffixesIndexes:
         ids.sort(key=lambda i: text[i:])
         res = ""
         for i in ids:
-            if text[:i]:
+            if text[:i]:  # mby change to try and except
                 res += text[:i][-1]
             else:
                 res += EOS

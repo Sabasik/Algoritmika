@@ -69,6 +69,7 @@ def plotResults(results, save=False):
 #simpleTest(BWTSuffixes2, text)
 #simpleTest(BWTSuffixesIndexes, text)
 
+
 results = multipleTests([BWTNaive, BWTSuffixes, BWTSuffixes2, BWTSuffixesIndexes], 10000, 100000, 10)
 print(results)
 plotResults(results, save=True)
