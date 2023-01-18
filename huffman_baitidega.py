@@ -1,4 +1,3 @@
-import base64
 from heapq import *
 
 
@@ -56,7 +55,7 @@ def huff_decode(encoded):
     coded = pieces[0].decode().split(", ")
     for c in coded:
         c = c.split(": ")
-        codes[c[1][1:-1]] = c[0][1:-1]
+        codes[c[1][1:-1]] = c[0][1:-1].replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r")
 
     enc = pieces[1]
 
