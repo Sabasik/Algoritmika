@@ -119,10 +119,7 @@ def plotResults(results, compressors, BWTs, times, save=False):
                 for stringSize in x:
                     for data in results[stringSize]:
                         if data["compressor"] == comp:
-                            print(comp, bwt, time)
                             y.append(data[bwt][time])
-                print(x)
-                print(y)
                 plt.plot(x, y, label=f'{comp} {bwt} {timeToText[time]}')
 
     #plt.figure(figsize=(10, 10))
@@ -154,7 +151,7 @@ saved = {10000: [{'compressor': 'Huffman', 'without BWT': (0.002194700005929917,
 plotResults(saved, compressors=["Huffman"], BWTs=["without BWT", "with BWT -", "with BWT"], times=[2])
 plotResults(saved, compressors=["LZ77"], BWTs=["without BWT", "with BWT -", "with BWT"], times=[2], save=True)
 
-text = "Banana"
+text = "ban"
 enc = LZ77_encode(text, 20)
 print(enc)
 dec = LZ77_decode(enc)
