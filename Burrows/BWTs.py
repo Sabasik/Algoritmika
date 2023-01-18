@@ -1,3 +1,4 @@
+from math import ceil
 EOS = "$"
 
 class BWTNaive:
@@ -87,7 +88,7 @@ class BWTSuffixesIndexes:
     def transformWindow(self, text, window_size):
         assert EOS not in text, "Error: End of string character ('%s') in input." % EOS
         BWTtext = ""
-        sections = len(text) // window_size
+        sections = ceil(len(text) / window_size)
         for j in range(sections):
             textSection = text[j*window_size:(j+1)*window_size]
             res = self.transform(textSection)
@@ -143,11 +144,12 @@ def invertTransformFaster(BFT_text):
 def invertTransformFasterWindow(BFT_text, window_size):
     window_size += 1
     invertedText = ""
-    sections = len(BFT_text) // window_size
+    sections = ceil(len(BFT_text) / window_size)
     for j in range(sections):
         textSection = BFT_text[j * window_size:(j + 1) * window_size]
         inverted = invertTransformFaster(textSection)
         invertedText += inverted
+
     return invertedText
 
 

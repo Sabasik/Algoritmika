@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 
 
 #runBWTonFile(BWTSuffixesIndexes, "Tõde_ja_õigus_I.txt", 80000)
-reverseBWTonFile("BWT_80000_Tõde_ja_õigus_I.txt", 80000)
+#reverseBWTonFile("BWT_80000_Tõde_ja_õigus_I.txt", 80000)
 
 
-#LZ77_encode_file_binary("Tõde_ja_õigus_I.txt",2047)
-#print("Kodeeritud")
-#LZ77_decode_file_binary("2047_Tõde_ja_õigus_I.txt")
-#print("Korras")
+LZ77_encode_file_binary("BWT_80000_Tõde_ja_õigus_I.txt",2047)
+print("Kodeeritud")
+LZ77_decode_file_binary("2047_BWT_80000_Tõde_ja_õigus_I.txt")
+print("Korras")
 
 
