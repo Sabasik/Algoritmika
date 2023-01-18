@@ -74,6 +74,7 @@ def huff_decode(encoded):
     return res
 
 
-e = huff_encode("mina elan siin, aga sina????")
-print(e)
-print(huff_decode(e))
+if __name__ == "__main__":
+    e = huff_encode("mina elan siin, aga sina????")
+    print(e)
+    print(huff_decode(e))

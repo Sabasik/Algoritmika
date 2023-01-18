@@ -1,7 +1,7 @@
 from BWTs import BWTSuffixes, invertTransformFaster, BWTSuffixes2, BWTSuffixesIndexes
 
 BWT = BWTSuffixesIndexes()
-text = "banana"
+text = "AATCGCTAGGATCCTAATCGCTAGTCCG"
 print(f'Input: {text}')
 transformed = BWT.transform(text)
 print(f'Transformed: {transformed}')
