@@ -43,10 +43,11 @@ def huff_encode(text):
     for el in text:
         bitstring += codes[el]
 
+    orig_len = len(bitstring)
     bitstring = "0" * ((8 - len(bitstring) % 8) % 8) + bitstring
     enc = int(bitstring, 2).to_bytes(len(bitstring) // 8, byteorder='big')
 
-    return str(codes)[1:-1].encode() + b"**" + enc
+    return str(codes)[1:-1].encode() + b"**" + str(orig_len).encode() + b"**" + enc
 
 
 def huff_decode(encoded):
@@ -57,9 +58,13 @@ def huff_decode(encoded):
         c = c.split(": ")
         codes[c[1][1:-1]] = c[0][1:-1].replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r")
 
-    enc = pieces[1]
+    orig_len = int(pieces[1])
+    enc = int.from_bytes(pieces[2], byteorder='big')
 
-    text = "{0:b}".format(int.from_bytes(enc, byteorder='big'))
+    text = "{0:b}".format(enc)
+    if len(text) < orig_len:
+        text = "0" * (orig_len - len(text)) + text
+
     res = ""
     i = 0
     while i < len(text):
@@ -92,5 +97,5 @@ if __name__ == "__main__":
     print(e)
     print(huff_decode(e))
 
-    huff_encode_file("text_files/Tõde_ja_õigus_I.txt", "compressed/huff_Tõde_ja_õigus_I")
-    huff_decode_file("compressed/huff_Tõde_ja_õigus_I", "decompressed/huff_Tõde_ja_õigus_I.txt")
+    huff_encode_file("text_files/Lorem_ipsum.txt", "compressed/huff_Lorem_ipsum")
+    huff_decode_file("compressed/huff_Lorem_ipsum", "decompressed/huff_Lorem_ipsum.txt")
