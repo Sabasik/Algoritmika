@@ -97,5 +97,5 @@ if __name__ == "__main__":
     print(e)
     print(huff_decode(e))
 
-    huff_encode_file("text_files/Lorem_ipsum.txt", "compressed/huff_Lorem_ipsum")
-    huff_decode_file("compressed/huff_Lorem_ipsum", "decompressed/huff_Lorem_ipsum.txt")
+    huff_encode_file("text_files/Little_Women.txt", "compressed/huff_Little_Women")
+    huff_decode_file("compressed/huff_Little_Women", "decompressed/huff_Little_Women.txt")

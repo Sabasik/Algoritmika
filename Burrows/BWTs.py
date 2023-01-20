@@ -169,8 +169,7 @@ def reverseBWTonFile(filename, window_size):
     text = file.read()
     file.close()
     inverted = invertTransformFasterWindow(text, window_size)
-    print(len(text), len(inverted))
-    file = open("text_files\\" + "BWT_inverse" + filename, 'w', encoding="utf-8")
+    file = open("text_files\\" + "BWT_inverse_" + filename, 'w', encoding="utf-8")
     file.write(inverted)
     file.close()
     return inverted
